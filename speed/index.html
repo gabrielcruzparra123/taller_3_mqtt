@@ -15,48 +15,101 @@
     </style>
   </head>
   <body>
-    <div class="col-md-12">
-        <h2>
-            <i class="glyphicon glyphicon-random"></i>
-            Datos en tiempo real
-        </h2>
-        <ul id="stream-data"></ul>
-    </div>
-    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-    <script>
-        $(function () {
+	
+	<script src="/socket.io/socket.io.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js" charset="utf-8"></script>
+  	<canvas id="myCanvas1"></canvas>
+	<canvas id="myCanvas2"></canvas>
+	<canvas id="myCanvas3"></canvas>
+    
+	<script>
+	
+	const socket= io();
+	
+	let counter1=0;
+	socket.on('temperature', function(dataTemperature){
+	myChart1.data.labels.push(counter1);
+	myChart1.data.datasets.forEach(dataset1=>{
+	dataset1.data.push(dataTemperature.value);
+	});
+	counter1++;
+	myChart1.update();
+	});
+	
+	
+	var ctx1 = document.getElementById("myCanvas1").getContext('2d');
+	var myChart1 = new Chart(ctx1, {
+		type: 'line',
+		data: {
+			labels: ["Temperature"],
+			datasets: [{
+			label:"Temperature",
+			backgroundColor: 'rgb(32,50,180)',
+			borderColor: 'rgb(61,108,10)',
+			data:[]
+			}]
+		},
+		options: {}
+	});
 
-        // Abre conexión bi-direccional con el servidor
-        var socket = io();
-            $('#stream-data').prepend($('<li>').text('Viendo si Hay mensajes!'));
+    
 
-        // En el momento en que llegue un mensaje del tópico 'chat message' ejecuta la función
-        socket.on('temperature', function(msg){
+	
 
-            // Agrega un nuevo mensaje a la lista de mensajes
-            var message = msg.split(';@')[0];
-            $('#stream-data').prepend($('<li>').text('Data: ' + message + ' time: ' + new Date()));
-                        window.scrollTo(0, document.body.scrollHeight);
-        });
+	let counter2=0;
+	socket.on('light', function(dataLight){
+	myChart2.data.labels.push(counter2);
+	myChart2.data.datasets.forEach(dataset2=>{
+	dataset2.data.push(dataLight.value);
+	});
+	counter2++;
+	myChart2.update();
+	});
+	
+	
+	var ctx2 = document.getElementById("myCanvas2").getContext('2d');
+	var myChart2 = new Chart(ctx2, {
+		type: 'line',
+		data: {
+			labels: ["Light"],
+			datasets: [{
+			label:"Light",
+			backgroundColor: 'rgb(182,183,4)',
+			borderColor: 'rgb(180,128,100)',
+			data:[]
+			}]
+		},
+		options: {}
+	});
+	
 
-           socket.on('light', function(msg){
+	
+	let counter3=0;
+	socket.on('peso', function(dataPeso){
+	myChart3.data.labels.push(counter3);
+	myChart3.data.datasets.forEach(dataset3=>{
+	dataset3.data.push(dataPeso.value);
+	});
+	counter3++;
+	myChart3.update();
+	});
+	
+	
+	var ctx3 = document.getElementById("myCanvas3").getContext('2d');
+	var myChart3 = new Chart(ctx3, {
+		type: 'line',
+		data: {
+			labels: ["Peso"],
+			datasets: [{
+			label:"Peso",
+			backgroundColor: 'rgb(100,100,0)',
+			borderColor: 'rgb(110,0,85)',
+			data:[]
+			}]
+		},
+		options: {}
+	});
 
-            // Agrega un nuevo mensaje a la lista de mensajes
-            var message = msg.split(';@')[0];
-            $('#stream-data').prepend($('<li>').text('Data: ' + message + ' time: ' + new Date()));
-                        window.scrollTo(0, document.body.scrollHeight);
-        }); 
-
-        socket.on('peso', function(msg){
-
-            // Agrega un nuevo mensaje a la lista de mensajes
-            var message = msg.split(';@')[0];
-            $('#stream-data').prepend($('<li>').text('Data: ' + message + ' time: ' + new Date()));
-                        window.scrollTo(0, document.body.scrollHeight);
-        });    
-
-       }); 
     </script>
   </body>
 </html>
