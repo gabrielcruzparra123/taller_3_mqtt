@@ -9,6 +9,8 @@ console.log('start service bridge');
 // Connection to topic numbers in mosquitto
 client.on('connect', function () {
     client.subscribe('temperature');
+    client.subscribe('peso');
+    client.subscribe('light');
     console.log('connected to mosquitto');
     startReceiverMosquitto()
 });
